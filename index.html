@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Weather Update - Iligan City</title>
+   <link rel="stylesheet" href="styles.css">
+   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    /* background-image: url(<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d252761.3775160516!2d124.20757292558835!3d8.162744844445777!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x325579b328c9540d%3A0xe6e208aba2f0d03b!2sIligan%20City%2C%20Lanao%20del%20Norte!5e0!3m2!1sen!2sph!4v1725497307970!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>);
+   <h1>WEATHER FORECAST UPDATE</h1>
+   <div id="weather-container">
+       <div id="weather">
+           <p>Loading weather data...</p>
+       </div>
+   </div>
+   
+
+   <script>
+document.addEventListener('DOMContentLoaded', async function() {
+   const apiKey = 'f68ec8e5c2c04006bf813953242208';
+   const cityName = 'Iligan';
+   const apiEndpoint = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${cityName}&days=3`;
+
+   try {
+       const response = await fetch(apiEndpoint);
+       const weatherData = await response.json();
+       console.log(weatherData);
+
+       const weatherContainer = document.getElementById('weather-container');
+       weatherContainer.innerHTML = ''; // Clear the loading message
+
+       weatherData.forecast.forecastday.forEach(element => {
+           const weatherBox = document.createElement('div');
+           weatherBox.classList.add('weather-box');
+           weatherBox.innerHTML = `
+               <h2>${cityName}</h2>
+               <p><strong>Date:</strong> ${element.date}</p>
+               <p><img src="https:${element.day.condition.icon}" alt="Weather icon"></p>
+               <p><strong>Temperature:</strong> ${element.day.avgtemp_c} °C</p>
+               <p><strong>Weather:</strong> ${element.day.condition.text}</p>
+               <p><strong>Humidity:</strong> ${element.day.avghumidity}%</p>
+           `;
+           weatherContainer.appendChild(weatherBox);
+       });
+   } catch (error) {
+       const weatherContainer = document.getElementById('weather');
+       weatherContainer.innerHTML = `<p>Unable to retrieve weather data: ${error.message}</p>`;
+   }
+});
+   </script>
+</body>
+</html>
